@@ -1,11 +1,22 @@
-function processargs(ARGS)
+
+function julia_main()::Cint
+    try
+        processargs()
+    catch
+        Base.invokelatest(Base.display_error, Base.catch_stack())
+        return 1
+    end
+    return 0
+end
+
+function processargs()
 
     if length(ARGS) >= 3
 
         ignorelane = false
         indexfile = ""
         metafile = ""
-        outfolder = ""
+        outfolder = "."
         index = 1
         readfile = ""
         while index <= length(ARGS)
@@ -34,7 +45,20 @@ function processargs(ARGS)
             
     else
     
-        println("Usage: splitfastq.jl [-ignorelane] [-indexfile <index_file>] -meta <meta> -outfolder <outfolder> ")
+        println("Usage: DemultiplexFASTQ [-ignorelane] -meta <meta> -outfolder <outfolder> -indexfile <index_file> <fastqfile>")
+        printboldln("\t-ignore_lane\tSet if all lanes contain same pool of barcodes, note sample meta file must contain column *Lane* if *ignorelane* not set")
+        printboldln("\t-meta\t\tSample meta file, a delimited file containing columns: *SampleName*, *Index*, *[Lane]*")
+        printboldln("\t-outfolder\tOutput folder")
+        printboldln("\t-indexfile\tFASTQ file containing index read")
     end
 
+end
+
+function printboldln(s)
+    f = split(s, "*")
+    for i = 1:2:length(f)
+        print(f[i])
+        (i < length(f)) && printstyled(f[i+1], bold=true)
+    end
+    println("")
 end
