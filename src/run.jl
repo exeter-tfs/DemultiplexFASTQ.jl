@@ -47,7 +47,7 @@ function processargs()
     
         println("Usage: DemultiplexFASTQ [-ignorelane] -meta <meta> -outfolder <outfolder> -indexfile <index_file> <fastqfile>")
         printboldln("\t-ignorelane\tSet if all lanes contain same pool of barcodes, note sample meta file must contain column *Lane* if *ignorelane* not set")
-        printboldln("\t-meta\t\tSample meta file, a delimited file containing columns: *SampleName*, *Index*, *[Lane]*")
+        printboldln("\t-meta\t\tSample meta file, a tab-delimited file containing columns: *SampleName*, *Index*, *[Lane]*")
         printboldln("\t-outfolder\tOutput folder")
         printboldln("\t-indexfile\tFASTQ file containing index read")
     end
