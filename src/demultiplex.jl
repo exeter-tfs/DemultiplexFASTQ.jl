@@ -67,7 +67,8 @@ function demultiplex(readfile, indexfile, indexes, labels, folder, barcodelength
     files   = joinpath.(outdirs, string.(labels, "_", indexes, "_", basename.(readfile)))
 
     
-    um_file = joinpath(folder, "Sample_unmatched", "unmatched_index_"*readfile)
+    um_file = joinpath(folder, "Sample_unmatched", "unmatched_index_"*basename(readfile))
+    
     mkpath(dirname(um_file))
     files   = [files ; um_file]
     println("[SFQ]\tFiles    :\t$files")
@@ -97,7 +98,7 @@ function demultiplex(readfile, indexfile, indexes, labels, folder, barcodelength
         stream_index = get(index_dict, index, length(files))
 
         if stream_index < length(files)
-            bl = barcodelengths[steam_index]
+            bl = barcodelengths[stream_index]
             barcode = barcode[1:bl] ## chop random barcode at specified length
         end
 
