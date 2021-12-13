@@ -14,9 +14,9 @@ function rundemultiplex(readfile, indexfile, metafile, outfolder, ignorelane=tru
     
     println("[SFQ]\tignorelane         :\t", ignorelane)
     
-    meta = CSV.File(metafile)
-    indexes = meta.Index
-    samples = meta.SampleName
+    meta = CSV.File(metafile, delim='\t')
+    indexes = map(strip, meta.Index)
+    samples = map(strip, meta.SampleName)
     indexlength = maximum(length, indexes)
 
     if !all(indexlength .== length.(indexes))
