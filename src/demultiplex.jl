@@ -70,10 +70,6 @@ function demultiplex(readfile, indexfile, indexes, labels, folder, barcodelength
     um_file = joinpath(folder, "Sample_unmatched", "unmatched_index_"*readfile)
     mkpath(dirname(um_file))
     files   = [files ; um_file]
-
-    for (o, f) in zip(outdirs, files)
-        println(o, "\t", f)
-    end
     println("[SFQ]\tFiles    :\t$files")
     
  
