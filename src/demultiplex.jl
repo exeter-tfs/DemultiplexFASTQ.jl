@@ -11,7 +11,7 @@ end
 
 
 function rundemultiplex(readfile, indexfile, metafile, outfolder, ignorelane=true, bl=6)
-    println("[SFQ]\tignore_lane  :\t", ignore_lane)
+    println("[SFQ]\tignorelane  :\t", ignorelane)
     
     meta = CSV.File(metafile)
     indexes = meta.Index
@@ -57,17 +57,23 @@ function demultiplex(readfile, indexfile, indexes, labels, folder, barcodelength
 
     ### open files
     outdirs = joinpath.(folder, string.("Sample_", labels))
-    for d in dirs
+    for d in outdirs
         try
             mkpath(d)
         catch
         end
     end
      
-    files   = joinpath.(outdirs, string.(labels, "_", indexes, "_", readfile))
+    files   = joinpath.(outdirs, string.(labels, "_", indexes, "_", basename.(readfile)))
+
+    
     um_file = joinpath(folder, "Sample_unmatched", "unmatched_index_"*readfile)
     mkpath(dirname(um_file))
     files   = [files ; um_file]
+
+    for (o, f) in zip(outdirs, files)
+        println(o, "\t", f)
+    end
     println("[SFQ]\tFiles    :\t$files")
     
  
