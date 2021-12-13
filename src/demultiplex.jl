@@ -10,13 +10,24 @@ function getlane(file)
 end
 
 
-function rundemultiplex(readfile, indexfile, metafile, outfolder, ignorelane=true)
+function rundemultiplex(readfile, indexfile, metafile, outfolder, ignorelane=true, bl=6)
     println("[SFQ]\tignore_lane  :\t", ignore_lane)
     
     meta = CSV.File(metafile)
     indexes = meta.Index
     samples = meta.SampleName
     indexlength = maximum(length, indexes)
+
+    if !all(indexlength .== length.(indexes))
+        error("Not all indexes identical length: \nindexes:$indexes \nindexlengths: $(length.(indexes))")
+    end
+    
+    if hasproperty(meta, :BarcodeLength)
+        barcodelengths = meta.BarcodeLength
+    else
+        barcodelengths = fill(bl, length(indexes))
+        println("[SFQ]\tBarcode lengths not specified, using $bl for all samples")
+    end
 
     if !ignorelane && !hasproperty(meta, :Lane)
         println("[SFQ]\tWarning ignorelane=false and lane not set in metafile, ignoring lane")
@@ -25,22 +36,23 @@ function rundemultiplex(readfile, indexfile, metafile, outfolder, ignorelane=tru
 
 
     if ignorelane
-        demultiplex(readfile, indexfile, indexes, samples, outfolder, indexlength)
+        demultiplex(readfile, indexfile, indexes, samples, outfolder, barcodelengths, indexlength)
     else
         lane = getlane(readfile)
         ind = meta.Lane .== lane
-        demultiplex(readfile, indexfile, indexes[ind], samples[ind], outfolder, indexlength)
+        demultiplex(readfile, indexfile, indexes[ind], samples[ind], outfolder, barcodelengths, indexlength)
     end
     
 end
 
 
-function demultiplex(readfile, indexfile, indexes, labels, folder, il=6, bl=6)
+function demultiplex(readfile, indexfile, indexes, labels, folder, barcodelengths, il=6)
     
     println("[SFQ]\tSplitting Reads    :\t$readfile")
     println("[SFQ]\tSplitting Indexes  :\t$indexfile")
     println("[SFQ]\tIndexes            :\t$indexes")
     println("[SFQ]\tLabels             :\t$labels")
+    println("[SFQ]\tBarcodeLengths     :\t$barcodelengths")
     println("[SFQ]\tFolder             :\t$folder")
 
     ### open files
@@ -81,6 +93,11 @@ function demultiplex(readfile, indexfile, indexes, labels, folder, il=6, bl=6)
 
         index, barcode = index_read[1:il], index_read[(il+1):end]
         stream_index = get(index_dict, index, length(files))
+
+        if stream_index < length(files)
+            bl = barcodelengths[steam_index]
+            barcode = barcode[1:bl] ## chop random barcode at specified length
+        end
 
         ids = split(read_id)
 
