@@ -20,19 +20,11 @@ This file is also given in `scripts` directory. Then run:
     julia demultiplex.jl -ignorelane -meta samplemeta.tsv -outfolder data -indexfile index.fq.gz reads.fq.gz
 ```
 
-Use `-ignorelane` when samples are pooled over all lanes. Do not use if library pools differ between lanes such that the same index may be used different samples in different lanes, in this case ensure sample meta file contains a column specifying the lane as below.
+Use `-ignorelane` when samples are pooled over all lanes. Do not use if library pools differ between lanes such that the same index may be used different samples in different lanes, in this case ensure sample meta file contains a column specifying the lane as below. If `ignorelane` is not specified, the lane is inferred from file name, e.g. `Undetermined_S0_L001_R1_001.fastq.gz` is Lane 1, and `Undetermined_S0_L002_R1_001.fastq.gz` is Lane 2.
 
 
-### Example Sample Meta File
-A delimited text file with required columns `SampleName` and `Index`, and optional columns `Lane` and `BarcodeLength` eg.
-
-|  SampleName  | Index  | Lane  | BarcodeLength |
-|--------------|--------|-------|---------------|
-| Sample_A     | ATCACG |   1   |     6         |
-| Sample_B     | TAGCTT |   1   |     8         |
-| Sample_C     | AGTCAA |   2   |     6         |
-| Sample_D     | GTGAAA |   2   |     6         |
-
+## Example Sample Meta File
+A tab-delimited text file with required columns `SampleName` and `Index`, and optional columns `Lane` and `BarcodeLength` eg.
 
 ```
 SampleName  Index   Lane    BarcodeLength
@@ -40,5 +32,4 @@ Sample_A    ATCACG  1   6
 Sample_B    TAGCTT  1   8        
 Sample_C    AGTCAA  2   6        
 Sample_D    GTGAAA  2   6        
-
 ```
