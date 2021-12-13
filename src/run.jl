@@ -28,7 +28,7 @@ function processargs()
             elseif ARGS[index] == "-meta"
                 index += 1
                 metafile = ARGS[index]
-            elseif ARGS[index] == "-folder"
+            elseif ARGS[index] == "-outfolder"
                 index += 1
                 outfolder = ARGS[index]
             else
@@ -46,7 +46,7 @@ function processargs()
     else
     
         println("Usage: DemultiplexFASTQ [-ignorelane] -meta <meta> -outfolder <outfolder> -indexfile <index_file> <fastqfile>")
-        printboldln("\t-ignore_lane\tSet if all lanes contain same pool of barcodes, note sample meta file must contain column *Lane* if *ignorelane* not set")
+        printboldln("\t-ignorelane\tSet if all lanes contain same pool of barcodes, note sample meta file must contain column *Lane* if *ignorelane* not set")
         printboldln("\t-meta\t\tSample meta file, a delimited file containing columns: *SampleName*, *Index*, *[Lane]*")
         printboldln("\t-outfolder\tOutput folder")
         printboldln("\t-indexfile\tFASTQ file containing index read")
