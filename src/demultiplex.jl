@@ -11,7 +11,8 @@ end
 
 
 function rundemultiplex(readfile, indexfile, metafile, outfolder, ignorelane=true, bl=6)
-    println("[SFQ]\tignorelane  :\t", ignorelane)
+    
+    println("[SFQ]\tignorelane         :\t", ignorelane)
     
     meta = CSV.File(metafile)
     indexes = meta.Index
@@ -40,7 +41,8 @@ function rundemultiplex(readfile, indexfile, metafile, outfolder, ignorelane=tru
     else
         lane = getlane(readfile)
         ind = meta.Lane .== lane
-        demultiplex(readfile, indexfile, indexes[ind], samples[ind], outfolder, barcodelengths, indexlength)
+        println("[SFQ]\tRestricting Lane   :\t", lane, " containing ", sum(ind), " samples, excluding ", sum(.!ind), " samples.")
+        demultiplex(readfile, indexfile, indexes[ind], samples[ind], outfolder, barcodelengths[ind], indexlength)
     end
     
 end
@@ -71,7 +73,7 @@ function demultiplex(readfile, indexfile, indexes, labels, folder, barcodelength
     
     mkpath(dirname(um_file))
     files   = [files ; um_file]
-    println("[SFQ]\tFiles    :\t$files")
+    println("[SFQ]\tFiles            :\t$files")
     
  
     streams = GzipCompressorStream.(open.(files, "w"))
