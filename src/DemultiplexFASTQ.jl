@@ -6,6 +6,8 @@ using CSV, CodecZlib
 include("demultiplex.jl")
 include("run.jl")
 
+export processargs
+
 
 
 end
